@@ -1,0 +1,39 @@
+# Portfolio System Design Explanation
+
+This system is built to support real-time portfolio tracking for 250+ users.
+
+## Components
+
+1. **Frontend UI**
+   - Allows users to log in and view their asset portfolios at any time
+
+2. **Backend API**
+   - Manages user sessions, receives portfolio fetch requests, and responds with up-to-date data
+
+3. **User + Asset Database**
+   - Stores users, their accounts, and which stocks/mutual funds they own
+   - Tables include users, accounts, assets, holdings, and price history
+
+4. **Price Ingestion Service**
+   - Fetches latest asset prices from external sources every 10 minutes
+
+5. **Scheduler (Cron/Celery)**
+   - Triggers the ingestion service every 10 minutes
+
+6. **Redis Cache**
+   - Stores recently calculated portfolio values and fresh prices
+   - Speeds up API responses
+
+7. **Portfolio Calculator**
+   - Computes current value of each user's holdings using latest prices
+   - Either on-demand (user requests) or periodically after new prices arrive
+
+## Scaling Strategy
+- Use Docker + Kubernetes for containerization and autoscaling
+- Load balancers handle API traffic
+- Separate services (price ingestion, portfolio calculation) for modular scaling
+
+## Reliability
+- Retries on failed price fetches
+- Backup APIs for price sources
+- Caching ensures fast load even during spikes
